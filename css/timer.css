@@ -1,5 +1,5 @@
 /* timer.css
-   Floating timer button + panel.
+   Floating timer button + panel + progress ring.
 */
 
 .timer-fab {
@@ -31,8 +31,6 @@
   box-shadow: var(--shadow);
 
   padding: 14px;
-
-  /* hidden by default */
   display: none;
 }
 
@@ -68,15 +66,81 @@
   font-size: 13px;
 }
 
-.timer-time {
-  font-size: 44px;
-  font-weight: 900;
-  letter-spacing: 1px;
-  margin: 12px 0;
+/* --- Progress ring (mask version: only the outer ring is drawn) --- */
+
+.ring-wrap {
+  display: grid;
+  place-items: center;
+  padding: 16px 0 12px;
 }
 
-.timer-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+/* This is the "track" behind the progress */
+.ring {
+  outline: 1px solid var(--border);
+  transition: background 0.4s linear;
+  --size: 170px;
+  --thickness: 12px;
+
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+
+  /* Default track color for dark mode */
+  background: rgba(255, 255, 255, 0.14);
+
+  position: relative;
+}
+
+/* Light mode: darker track so the ring is visible */
+html[data-theme="light"] .ring {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+/* This pseudo-element is the progress ring itself */
+.ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+
+  /* Progress paint */
+  background: conic-gradient(var(--accent) calc(var(--p) * 1turn),
+      transparent 0);
+
+  /* The important part: we cut out the center with a mask */
+  -webkit-mask: radial-gradient(farthest-side,
+      transparent calc(100% - var(--thickness)),
+      #000 calc(100% - var(--thickness)));
+
+  mask: radial-gradient(farthest-side,
+      transparent calc(100% - var(--thickness)),
+      #000 calc(100% - var(--thickness)));
+}
+
+/* Inner circle (covers the middle completely) */
+.ring-center {
+  position: absolute;
+  inset: var(--thickness);
+  border-radius: 50%;
+
+  background: var(--card);
+  border: 1px solid var(--border);
+
+  display: grid;
+  place-items: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.ring-time {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.ring-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: capitalize;
 }

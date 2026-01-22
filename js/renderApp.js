@@ -5,11 +5,10 @@
  * No localStorage.
  * No timers.
  * No event listeners.
- * 
- * floating timer button in the buttom right
- * timer panel opens/closes
+ *
+ * Feature 2.1:
+ * - Progress ring for the timer (CSS conic-gradient)
  */
-
 
 function escapeHtml(str) {
   return String(str)
@@ -28,12 +27,49 @@ function formatTime(seconds) {
   return `${mm}:${ss}`;
 }
 
+/**
+ * clamp(n, min, max)
+ * Small helper so progress never goes below/above valid range.
+ */
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
+
+/**
+ * getSessionTotalSeconds(timer)
+ * Returns total length for the current mode (focus or break).
+ */
+function getSessionTotalSeconds(timer) {
+  if (timer.mode === "focus") return timer.focusSeconds;
+  return timer.breakSeconds;
+}
+
 export default function renderApp(root, state) {
   let todos;
   todos = Array.isArray(state.todos) ? state.todos : [];
 
   let timeText;
   timeText = formatTime(state.timer.secondsLeft);
+
+  // Progress calculation:
+  // - total = how long this session is
+  // - done = total - secondsLeft
+  // - p = done / total (0..1)
+  let total;
+  let done;
+  let p;
+
+  total = getSessionTotalSeconds(state.timer);
+  done = total - state.timer.secondsLeft;
+
+  // If total is 0 (should not happen), avoid dividing by zero
+  if (total <= 0) {
+    p = 0;
+  } else {
+    p = done / total;
+  }
+
+  p = clamp(p, 0, 1);
 
   root.innerHTML = `
     <div class="app">
@@ -88,7 +124,15 @@ export default function renderApp(root, state) {
           Mode: <b>${state.timer.mode}</b> ${state.timer.running ? "(running)" : "(paused)"}
         </p>
 
-        <div class="timer-time">${timeText}</div>
+        <!-- Progress ring -->
+        <div class="ring-wrap">
+          <div class="ring" style="--p:${p};" aria-label="Progress ring">
+            <div class="ring-center">
+              <div class="ring-time">${timeText}</div>
+              <div class="ring-sub">${state.timer.mode}</div>
+            </div>
+          </div>
+        </div>
 
         <div class="timer-actions">
           <button type="button" data-action="timer-start">Start</button>
