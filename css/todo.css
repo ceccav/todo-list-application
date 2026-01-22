@@ -1,3 +1,100 @@
-/*
-todo.css
-*/
+/**
+ * todo.css
+ *
+ * Styles for the todo list.
+ * Goal:
+ * - no bullet points
+ * - clean rows
+ * - round checkbox button that fills when done
+ * - done items slightly transparent
+ */
+
+.todo-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.todo-form input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  outline: none;
+}
+
+.todo-form button {
+  padding: 10px 14px;
+}
+
+/* Remove bullet points and spacing */
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Each row */
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.14);
+
+  margin-bottom: 10px;
+}
+
+/* Done style (works in both dark/light because it's opacity) */
+.todo-item.done {
+  opacity: 0.55;
+}
+
+/* Checkbox button */
+.checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+
+  border: 2px solid var(--text);
+  background: transparent;
+
+  padding: 0;
+  cursor: pointer;
+
+  display: inline-block;
+}
+
+/* Fill the circle when done */
+.todo-item.done .checkbox {
+  background: var(--text);
+}
+
+/* Title text */
+.todo-title {
+  flex: 1;
+}
+
+/* Delete button (simple, clean) */
+.delete {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.delete:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
