@@ -1,3 +1,82 @@
-/*
-timer.css
+/* timer.css
+   Floating timer button + panel.
 */
+
+.timer-fab {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--text);
+
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.timer-panel {
+  position: fixed;
+  right: 18px;
+  bottom: 70px;
+
+  width: min(360px, calc(100vw - 36px));
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+
+  padding: 14px;
+
+  /* hidden by default */
+  display: none;
+}
+
+.timer-panel.open {
+  display: block;
+}
+
+.timer-panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.timer-title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.timer-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.timer-mode {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.timer-time {
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin: 12px 0;
+}
+
+.timer-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}

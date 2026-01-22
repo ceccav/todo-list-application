@@ -5,12 +5,12 @@
  * No localStorage.
  * No timers.
  * No event listeners.
+ * 
+ * floating timer button in the buttom right
+ * timer panel opens/closes
  */
 
-/**
- * escapeHtml(str)
- * Prevents user input from becoming HTML.
- */
+
 function escapeHtml(str) {
   return String(str)
     .replaceAll("&", "&amp;")
@@ -18,10 +18,22 @@ function escapeHtml(str) {
     .replaceAll(">", "&gt;");
 }
 
+function formatTime(seconds) {
+  let mm;
+  let ss;
+
+  mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+  ss = String(seconds % 60).padStart(2, "0");
+
+  return `${mm}:${ss}`;
+}
+
 export default function renderApp(root, state) {
-  // Safety fallback
   let todos;
   todos = Array.isArray(state.todos) ? state.todos : [];
+
+  let timeText;
+  timeText = formatTime(state.timer.secondsLeft);
 
   root.innerHTML = `
     <div class="app">
@@ -40,11 +52,7 @@ export default function renderApp(root, state) {
       <main class="content">
         <section class="card">
           <form class="todo-form" data-action="add-form">
-            <input
-              name="title"
-              placeholder="Add a task…"
-              autocomplete="off"
-            />
+            <input name="title" placeholder="Add a task…" autocomplete="off" />
             <button>Add</button>
           </form>
 
@@ -52,27 +60,10 @@ export default function renderApp(root, state) {
             ${todos
       .map(
         (t) => `
-              <li
-                class="todo-item ${t.done ? "done" : ""}"
-                data-id="${t.id}"
-              >
-                <button
-                  class="checkbox"
-                  data-action="toggle-done"
-                  aria-label="Toggle done"
-                ></button>
-
-                <span class="todo-title">
-                  ${escapeHtml(t.title)}
-                </span>
-
-                <button
-                  class="delete"
-                  data-action="delete-todo"
-                  aria-label="Delete"
-                >
-                  ×
-                </button>
+              <li class="todo-item ${t.done ? "done" : ""}" data-id="${t.id}">
+                <button class="checkbox" data-action="toggle-done" aria-label="Toggle done"></button>
+                <span class="todo-title">${escapeHtml(t.title)}</span>
+                <button class="delete" data-action="delete-todo" aria-label="Delete">×</button>
               </li>
             `
       )
@@ -80,6 +71,32 @@ export default function renderApp(root, state) {
           </ul>
         </section>
       </main>
+
+      <!-- Floating timer button -->
+      <button class="timer-fab" type="button" data-action="timer-toggle-ui" aria-label="Open timer">
+        ${timeText}
+      </button>
+
+      <!-- Timer panel -->
+      <section class="timer-panel ${state.isTimerOpen ? "open" : "closed"}">
+        <div class="timer-panel-header">
+          <h2 class="timer-title">Focus timer</h2>
+          <button class="timer-close" type="button" data-action="timer-toggle-ui" aria-label="Close">×</button>
+        </div>
+
+        <p class="timer-mode">
+          Mode: <b>${state.timer.mode}</b> ${state.timer.running ? "(running)" : "(paused)"}
+        </p>
+
+        <div class="timer-time">${timeText}</div>
+
+        <div class="timer-actions">
+          <button type="button" data-action="timer-start">Start</button>
+          <button type="button" data-action="timer-pause" ${state.timer.running ? "" : "disabled"}>Pause</button>
+          <button type="button" data-action="timer-reset">Reset</button>
+          <button type="button" data-action="timer-switch">Switch</button>
+        </div>
+      </section>
     </div>
   `;
 }

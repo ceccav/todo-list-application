@@ -27,18 +27,28 @@ export default function bindEvents(root, handlers) {
   root.addEventListener("click", (e) => {
     let btn;
     let action;
-    let li;
-    let id;
 
     btn = e.target.closest("button[data-action]");
     if (!btn) return;
 
     action = btn.dataset.action;
 
-    if (action === "theme-toggle") {
+    // Actions without ids
+    if (
+      action === "theme-toggle" ||
+      action === "timer-toggle-ui" ||
+      action === "timer-start" ||
+      action === "timer-pause" ||
+      action === "timer-reset" ||
+      action === "timer-switch"
+    ) {
       handlers[action]();
       return;
     }
+
+    // Actions with todo id
+    let li;
+    let id;
 
     li = btn.closest(".todo-item");
     if (!li) return;
