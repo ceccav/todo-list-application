@@ -1,0 +1,16 @@
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.content {
+  margin-top: 14px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
